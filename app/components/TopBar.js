@@ -47,10 +47,6 @@ export default function TopBar({ title = 'ERP CRM Platform' }) {
 
       {/* Right */}
       <div className="flex items-center gap-2">
-        <button className="p-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full cursor-pointer relative">
-          <span className="">notifications</span>
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border-2 border-surface-ice" />
-        </button>
 
         <div className="relative ml-1" ref={menuRef}>
           <button
