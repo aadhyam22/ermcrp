@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 export default function TopBar({ title = 'ERP CRM Platform' }) {
   const router = useRouter();
@@ -23,11 +25,16 @@ export default function TopBar({ title = 'ERP CRM Platform' }) {
     router.push('/profile');
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsMenuOpen(false);
     const confirmed = window.confirm('Are you sure you want to log out?');
     if (confirmed) {
-      router.push('/login');
+      try {
+        await signOut(auth);
+        router.push('/login');
+      } catch (error) {
+        console.error('Logout error:', error);
+      }
     }
   };
 
