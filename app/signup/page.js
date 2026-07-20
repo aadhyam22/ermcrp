@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
 
 export default function SignUpPage() {
     const [showPassword, setShowPassword] = useState(false);
@@ -30,6 +31,14 @@ export default function SignUpPage() {
         try {
             const { user } = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(user, { displayName: name });
+            
+            // Save user details to Firestore (role will be set manually in the database)
+            await setDoc(doc(db, 'users', user.uid), {
+                name,
+                email,
+                createdAt: new Date().toISOString()
+            });
+
             router.push('/dashboard');
         } catch (err) {
             setError(err.code === 'auth/email-already-in-use'

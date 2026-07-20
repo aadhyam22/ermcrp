@@ -1,7 +1,12 @@
 "use client";
 
+import { AuthProvider } from '../context/AuthContext';
 import { CRMProvider } from '../context/CRMContext';
 
 export default function ClientProvider({ children }) {
-  return <CRMProvider>{children}</CRMProvider>;
+  return (
+    <AuthProvider>
+      <CRMProvider>{children}</CRMProvider>
+    </AuthProvider>
+  );
 }
