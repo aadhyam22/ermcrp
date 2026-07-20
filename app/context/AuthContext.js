@@ -16,12 +16,12 @@ export function AuthProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         setUser(firebaseUser);
-        
+
         try {
           // Fetch the user's role from Firestore 'users' collection
           const userDocRef = doc(db, 'users', firebaseUser.uid);
           const userDoc = await getDoc(userDocRef);
-          
+
           if (userDoc.exists()) {
             setRole(userDoc.data().role || 'manager'); // Fallback to manager if role is missing
           } else {

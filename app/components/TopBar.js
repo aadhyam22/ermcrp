@@ -54,11 +54,10 @@ export default function TopBar({ title = 'ERP CRM Platform' }) {
           <button
             onClick={() => setIsMenuOpen((prev) => !prev)}
             className="p-2 rounded-full border border-outline-variant/20 cursor-pointer hover:bg-surface-variant/50 transition-colors text-void-navy flex items-center justify-center"
-            title="Settings"
+            title="Profile"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.342 3.204a1 1 0 011.316 0l1.455.97a7.51 7.51 0 002.502.972l1.73-.243a1 1 0 011.082.723l.635 1.71a7.51 7.51 0 001.761 1.761l1.71.635a1 1 0 01.723 1.082l-.243 1.73a7.51 7.51 0 00.972 2.502l.97 1.455a1 1 0 010 1.316l-.97 1.455a7.51 7.51 0 00-.972 2.502l.243 1.73a1 1 0 01-.723 1.082l-1.71.635a7.51 7.51 0 00-1.761 1.761l-.635 1.71a1 1 0 01-1.082.723l-1.73-.243a7.51 7.51 0 00-2.502.972l-1.455.97a1 1 0 01-1.316 0l-1.455-.97a7.51 7.51 0 00-2.502-.972l-1.73.243a1 1 0 01-1.082-.723l-.635-1.71a7.51 7.51 0 00-1.761-1.761l-1.71-.635a1 1 0 01-.723-1.082l.243-1.73a7.51 7.51 0 00-.972-2.502l-.97-1.455a1 1 0 010-1.316l.97-1.455a7.51 7.51 0 00.972-2.502l-.243-1.73a1 1 0 01.723-1.082l1.71-.635a7.51 7.51 0 001.761-1.761l.635-1.71a1 1 0 011.082-.723l1.73.243a7.51 7.51 0 002.502-.972l1.455-.97z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
             </svg>
           </button>
 
