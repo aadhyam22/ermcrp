@@ -98,7 +98,7 @@ export default function BillingPage() {
           ...prev,
           productsList: [
             ...prev.productsList,
-            { productId: prod.id, name: prod.name, price: parseAmount(prod.price), qty: 1 },
+            { productId: prod.id, name: prod.name, price: parseAmount(prod.priceInclGst ?? prod.priceExclGst), qty: 1 },
           ],
         };
       }
@@ -290,10 +290,10 @@ export default function BillingPage() {
 
           {/* Product Selection */}
           <div>
-            <label className="block font-label text-[12px] text-industrial-gray mb-1">Select Products</label>
+            <label className="block font-label text-[12px] text-industrial-gray mb-1">Select BOQ</label>
             <div className="border border-outline-variant/50 rounded-lg divide-y divide-outline-variant/20 max-h-56 overflow-y-auto">
               {(!products || products.length === 0) ? (
-                <div className="p-3 text-[13px] text-industrial-gray">No products available. Add products in the Product module first.</div>
+                <div className="p-3 text-[13px] text-industrial-gray">No BOQs available. Add BOQs in the BOQ module first.</div>
               ) : products.map((prod) => {
                 const selected = formData.productsList.find((p) => p.productId === prod.id);
                 return (
@@ -307,25 +307,16 @@ export default function BillingPage() {
                       />
                       <div>
                         <div className="text-[14px] font-medium text-void-navy">{prod.name}</div>
-                        <div className="text-[12px] text-industrial-gray">{prod.price}</div>
+                        <div className="text-[12px] text-industrial-gray">{prod.priceInclGst ?? prod.priceExclGst}</div>
                       </div>
                     </label>
-                    {selected && (
-                      <input
-                        type="number"
-                        min="1"
-                        value={selected.qty}
-                        onChange={(e) => handleProductQtyChange(prod.id, e.target.value)}
-                        className="w-16 border border-outline-variant/50 rounded p-1.5 text-[13px] text-center focus:ring-1 focus:ring-tech-blue outline-none"
-                      />
-                    )}
                   </div>
                 );
               })}
             </div>
             {hasProducts && (
               <div className="mt-2 text-right text-[13px] text-industrial-gray">
-                Products subtotal: <span className="font-semibold text-void-navy">{formatAmount(productsTotal)}</span>
+                BOQs subtotal: <span className="font-semibold text-void-navy">{formatAmount(productsTotal)}</span>
               </div>
             )}
           </div>
@@ -427,7 +418,7 @@ export default function BillingPage() {
                       ))
                     ) : (
                       <tr>
-                        <td className="p-2.5 text-void-navy font-medium">{viewingInvoice.project || 'Service / Product'}</td>
+                        <td className="p-2.5 text-void-navy font-medium">{viewingInvoice.project || 'Service / BOQ'}</td>
                         <td className="p-2.5 text-center">1</td>
                         <td className="p-2.5 text-right">{viewingInvoice.amount || '-'}</td>
                         <td className="p-2.5 text-right font-medium">{viewingInvoice.amount || '-'}</td>

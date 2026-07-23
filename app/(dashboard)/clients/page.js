@@ -17,7 +17,6 @@ export default function ClientsPage() {
   const [formData, setFormData] = useState({
     name: '',
     project: '',
-    status: 'Active',
     value: '',
     productsList: [], // [{ productId, name, price, qty }]
   });
@@ -37,13 +36,12 @@ export default function ClientsPage() {
       setFormData({
         name: client.name || '',
         project: client.project || '',
-        status: client.status || 'Active',
         value: client.value || '',
         productsList: client.productsList || [],
       });
     } else {
       setEditingId(null);
-      setFormData({ name: '', project: '', status: 'Active', value: '', productsList: [] });
+      setFormData({ name: '', project: '', value: '', productsList: [] });
     }
     setIsModalOpen(true);
   };
@@ -64,7 +62,7 @@ export default function ClientsPage() {
           ...prev,
           productsList: [
             ...prev.productsList,
-            { productId: prod.id, name: prod.name, price: parseAmount(prod.price), qty: 1 },
+            { productId: prod.id, name: prod.name, price: parseAmount(prod.priceInclGst ?? prod.priceExclGst), qty: 1 },
           ],
         };
       }
@@ -109,9 +107,7 @@ export default function ClientsPage() {
 
   // Derive KPIs from dynamic data
   const totalClients = clients.length;
-  const activeClients = clients.filter(c => c.status === 'Active').length;
   const totalRevenue = clients
-    .filter(client => client.status === "Active")
     .reduce((sum, client) => {
       const value = Number(
         String(client.value || 0).replace(/,/g, "")
@@ -123,18 +119,10 @@ export default function ClientsPage() {
 
 
   const kpiCards = [
-    { label: 'Total Portfolio', value: totalClients.toString(), trendIcon: null, trendColor: 'text-industrial-gray' },
-    { label: 'Total Active Clients', value: activeClients.toString(), trendIcon: null, trendColor: 'text-industrial-gray' },
+    { label: 'Total Clients', value: totalClients.toString(), trendIcon: null, trendColor: 'text-industrial-gray' },
     { label: 'Total Contract Value', value: totalValue, trendIcon: null, trendColor: 'text-industrial-gray' },
   ];
 
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case 'Active': return { color: 'bg-secondary-container/30 text-secondary border-secondary-container', dot: 'bg-energetic-green' };
-      case 'Completed': return { color: 'bg-error-container/30 text-error border-error-container', dot: 'bg-error animate-pulse' };
-      default: return { color: 'bg-surface-variant/50 text-industrial-gray border-outline-variant/30', dot: 'bg-industrial-gray' };
-    }
-  };
 
   return (
     <div className="max-w-[1280px] mx-auto space-y-6 pb-6">
@@ -180,7 +168,6 @@ export default function ClientsPage() {
               <thead>
                 <tr className="bg-void-navy">
                   <th className="p-3 font-label text-[11px] text-white font-medium uppercase tracking-wider">Client </th>
-                  <th className="p-3 font-label text-[11px] text-white font-medium uppercase tracking-wider">Status</th>
                   <th className="p-3 font-label text-[11px] text-white font-medium uppercase tracking-wider">Contract Value</th>
                   <th className="p-3 font-label text-[11px] text-white font-medium uppercase tracking-wider text-right">Actions</th>
                 </tr>
@@ -193,7 +180,6 @@ export default function ClientsPage() {
                     </td>
                   </tr>
                 ) : clients.map((client) => {
-                  const style = getStatusStyle(client.status);
                   return (
                     <tr key={client.id} className="hover:bg-surface-container-low transition-colors group">
                       <td className="p-3">
@@ -205,12 +191,6 @@ export default function ClientsPage() {
                           {client.name}
                         </button>
                         <div className="text-industrial-gray font-label text-[11px]">{client.project}</div>
-                      </td>
-                      <td className="p-3">
-                        <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-label text-[11px] border ${style.color}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
-                          {client.status}
-                        </span>
                       </td>
                       <td className="p-3 font-mono text-[14px]">{client.value || '-'}</td>
                       <td className="p-3 text-right">
@@ -237,20 +217,14 @@ export default function ClientsPage() {
             <label className="block font-label text-[12px] text-industrial-gray mb-1">Client Name</label>
             <input required name="name" value={formData.name} onChange={handleChange} className="w-full border border-outline-variant/50 rounded p-2 focus:ring-1 focus:ring-tech-blue outline-none text-[14px]" />
           </div>
-          <div>
-            <label className="block font-label text-[12px] text-industrial-gray mb-1">Status</label>
-            <select name="status" value={formData.status} onChange={handleChange} className="w-full border border-outline-variant/50 rounded p-2 focus:ring-1 focus:ring-tech-blue outline-none text-[14px]">
-              <option value="Active">Active</option>
-              <option value="Completed">Completed</option>
-            </select>
-          </div>
+
 
           {/* Product Selection */}
           <div>
-            <label className="block font-label text-[12px] text-industrial-gray mb-1">Select Products</label>
+            <label className="block font-label text-[12px] text-industrial-gray mb-1">Select BOQ</label>
             <div className="border border-outline-variant/50 rounded-lg divide-y divide-outline-variant/20 max-h-56 overflow-y-auto">
               {(!products || products.length === 0) ? (
-                <div className="p-3 text-[13px] text-industrial-gray">No products available. Add products in the Product module first.</div>
+                <div className="p-3 text-[13px] text-industrial-gray">No BOQs available. Add BOQs in the BOQ module first.</div>
               ) : products.map((prod) => {
                 const selected = formData.productsList.find((p) => p.productId === prod.id);
                 return (
@@ -264,18 +238,9 @@ export default function ClientsPage() {
                       />
                       <div>
                         <div className="text-[14px] font-medium text-void-navy">{prod.name}</div>
-                        <div className="text-[12px] text-industrial-gray">{prod.price}</div>
+                        <div className="text-[12px] text-industrial-gray">{prod.priceInclGst ?? prod.priceExclGst}</div>
                       </div>
                     </label>
-                    {selected && (
-                      <input
-                        type="number"
-                        min="1"
-                        value={selected.qty}
-                        onChange={(e) => handleProductQtyChange(prod.id, e.target.value)}
-                        className="w-16 border border-outline-variant/50 rounded p-1.5 text-[13px] text-center focus:ring-1 focus:ring-tech-blue outline-none"
-                      />
-                    )}
                   </div>
                 );
               })}
@@ -284,13 +249,13 @@ export default function ClientsPage() {
 
           {/* Products Ordered - auto-filled when products are selected, editable otherwise */}
           <div>
-            <label className="block font-label text-[12px] text-industrial-gray mb-1">Products Ordered</label>
+            <label className="block font-label text-[12px] text-industrial-gray mb-1">BOQs Ordered</label>
             {hasProducts ? (
               <div className="w-full border border-outline-variant/50 rounded p-2 text-[14px] bg-surface-container-low text-on-surface-variant">
                 {formData.productsList.map((p) => `${p.name} (x${p.qty})`).join(', ')}
               </div>
             ) : (
-              <input name="project" value={formData.project} onChange={handleChange} className="w-full border border-outline-variant/50 rounded p-2 focus:ring-1 focus:ring-tech-blue outline-none text-[14px]" placeholder="Manual description (optional if selecting products above)" />
+              <input name="project" value={formData.project} onChange={handleChange} className="w-full border border-outline-variant/50 rounded p-2 focus:ring-1 focus:ring-tech-blue outline-none text-[14px]" placeholder="Manual description (optional if selecting BOQs above)" />
             )}
           </div>
 
@@ -326,20 +291,16 @@ export default function ClientsPage() {
                 <div className="font-headline font-bold text-[20px] text-void-navy">{viewingClient.name}</div>
                 <div className="text-[12px] text-industrial-gray mt-1">{viewingClient.project || 'No description provided'}</div>
               </div>
-              <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-label text-[11px] border ${getStatusStyle(viewingClient.status).color}`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${getStatusStyle(viewingClient.status).dot}`} />
-                {viewingClient.status}
-              </span>
             </div>
 
             {viewingClient.productsList && viewingClient.productsList.length > 0 && (
               <div>
-                <div className="font-label text-[11px] text-industrial-gray uppercase tracking-wider mb-2">Products Ordered</div>
+                <div className="font-label text-[11px] text-industrial-gray uppercase tracking-wider mb-2">BOQs Ordered</div>
                 <div className="border border-outline-variant/30 rounded-lg overflow-hidden">
                   <table className="w-full text-[13px]">
                     <thead className="bg-surface-container-low">
                       <tr>
-                        <th className="text-left p-2 font-label text-[11px] text-industrial-gray uppercase">Product</th>
+                        <th className="text-left p-2 font-label text-[11px] text-industrial-gray uppercase">BOQ</th>
                         <th className="text-center p-2 font-label text-[11px] text-industrial-gray uppercase">Qty</th>
                         <th className="text-right p-2 font-label text-[11px] text-industrial-gray uppercase">Unit Price</th>
                         <th className="text-right p-2 font-label text-[11px] text-industrial-gray uppercase">Subtotal</th>
