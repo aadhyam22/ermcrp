@@ -47,7 +47,7 @@ export default function EmployeesPage() {
   };
 
   const totalWorkforce = employees.length;
-  const active = employees.filter(e => e.status === 'Active On-site').length;
+  const active = employees.filter(e => e.status === 'Active').length;
 
   const getStatusStyle = (status) => {
     switch (status) {
